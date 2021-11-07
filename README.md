@@ -16,4 +16,4 @@ Code and pre-trained models will be publicized soon.
 
 ### Acknowledgements
 
-The code is based on [ViLT](https://github.com/dandelin/ViLT) and some of the code is borrowed from [CLIP](https://github.com/openai/CLIP), and [Swin-Transformer](https://github.com/microsoft/Swin-Transformer).
+The code is based on [ViLT](https://github.com/dandelin/ViLT) and some of the code is borrowed from [CLIP](https://github.com/openai/CLIP) and [Swin-Transformer](https://github.com/microsoft/Swin-Transformer).
