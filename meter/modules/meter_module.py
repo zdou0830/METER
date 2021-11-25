@@ -164,11 +164,8 @@ class METERTransformerSS(pl.LightningModule):
         if self.hparams.config["load_path"] != "" and self.hparams.config["test_only"]:
             ckpt = torch.load(self.hparams.config["load_path"], map_location="cpu")
             state_dict = ckpt["state_dict"]
-            try:
-                self.load_state_dict(state_dict, strict=False)
-            except:
-                state_dict = adapt_position_encoding(state_dict, after=resolution_after, patch_size=self.hparams.config['patch_size'])
-                self.load_state_dict(state_dict, strict=False)
+            state_dict = adapt_position_encoding(state_dict, after=resolution_after, patch_size=self.hparams.config['patch_size'])
+            self.load_state_dict(state_dict, strict=False)
 
     def infer(
         self,
@@ -176,6 +173,7 @@ class METERTransformerSS(pl.LightningModule):
         mask_text=False,
         mask_image=False,
         image_token_type_idx=1,
+        img=None,
     ):
         if img is None:
             if f"image_{image_token_type_idx - 1}" in batch:
@@ -199,7 +197,7 @@ class METERTransformerSS(pl.LightningModule):
 
         image_embeds = self.vit_model(img)
         image_embeds = self.cross_modal_image_transform(image_embeds)
-        image_masks = torch.ones((image_embeds.size(0), image_embeds.size(1)), dtype=torch.long, device)
+        image_masks = torch.ones((image_embeds.size(0), image_embeds.size(1)), dtype=torch.long, device=device)
         extend_image_masks = self.text_transformer.get_extended_attention_mask(image_masks, image_masks.size(), device)
 
         text_embeds, image_embeds = (
@@ -223,6 +221,7 @@ class METERTransformerSS(pl.LightningModule):
         else:
             avg_image_feats = self.avgpool(image_feats.transpose(1, 2)).view(image_feats.size(0), 1, -1)
             cls_feats_image = self.cross_modal_image_pooler(avg_image_feats)
+        cls_feats = torch.cat([cls_feats_text, cls_feats_image], dim=-1)
 
         ret = {
             "text_feats": text_feats,

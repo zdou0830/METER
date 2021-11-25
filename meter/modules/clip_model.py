@@ -55,7 +55,9 @@ class Transformer(nn.Module):
         self.resblocks = nn.Sequential(*[ResidualAttentionBlock(width, heads, attn_mask) for _ in range(layers-1)])
 
     def forward(self, x: torch.Tensor, x_mask: torch.Tensor=None):
-        return self.resblocks(x, x_mask)
+        for block in self.resblocks:
+            x = block(x, x_mask)
+        return x
 
 
 class VisualTransformer(nn.Module):
@@ -200,8 +202,8 @@ def adapt_position_encoding(model, patch_size=32, after=384,
     if len(origin_pos_embed.shape) == 2:
         origin_dim2 = True
         origin_pos_embed = origin_pos_embed.unsqueeze(0)
-    before = int(np.sqrt(origin_pos_embed.shape[1] - 1))
-    grid_before = before // patch_size
+    grid_before = int(np.sqrt(origin_pos_embed.shape[1] - 1))
+    before = int(grid_before*patch_size)
     assert (before % patch_size) == 0
     grid_after = after // patch_size
     assert (after % patch_size) == 0

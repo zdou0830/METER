@@ -3,7 +3,6 @@ import pandas as pd
 import pyarrow as pa
 import random
 import os
-import json
 
 from tqdm import tqdm
 from glob import glob
@@ -36,43 +35,38 @@ def path2rest(path, iid2captions):
 
 
 def make_arrow(root, dataset_root):
-    imgs = {}
-    with open(f"{root}/vg.train.img.tsv", "r") as fp:
-        imgs['train'] = fp.readlines()
-    captions = {}
-    with open(f"{root}/vg.train.caption.tsv", "r") as fp:
-        captions['train'] = fp.readlines()
-    def to_batch(images, texts):
-        img_lines = [l.strip().split('\t') for l in images]
-        imgid2image = {}
-        for imgid, img in img_lines:
-            imgid2image[imgid] = img
-        
-        txt_lines = [l.strip().split('\t') for l in texts]
-        imgid2text = {}
-        for imgid, txt in txt_lines:
-            txt = json.loads(txt)
-            txt_list = [l['caption'] for l in txt]
-            imgid2text[imgid] = txt_list
+    with open(f"{root}/annotations/region_descriptions.json", "r") as fp:
+        captions = json.load(fp)
 
-        assert len(imgid2image) == len(imgid2text)
-        batches = []
-        for imgid in imgid2image:
-            batches.append([imgid2image[imgid], imgid2image[imgid], imgid])
-        return batches 
+    iid2captions = defaultdict(list)
+    for cap in tqdm(captions):
+        cap = cap["regions"]
+        for c in cap:
+            iid2captions[c["image_id"]].append(c)
 
-    for split in ["train"]:
-        batches = to_batch(imgs[split], captions[split]) 
-        print(len(batches))
+    paths = list(glob(f"{root}/images/VG_100K/*.jpg")) + list(
+        glob(f"{root}/images/VG_100K_2/*.jpg")
+    )
+    random.shuffle(paths)
+    caption_paths = [
+        path for path in paths if int(path.split("/")[-1][:-4]) in iid2captions
+    ]
 
-        dataframe = pd.DataFrame(
-            batches, columns=["image", "caption", "image_id"],
-        )
+    if len(paths) == len(caption_paths):
+        print("all images have caption annotations")
+    else:
+        print("not all images have caption annotations")
+    print(
+        len(paths), len(caption_paths), len(iid2captions),
+    )
 
-        table = pa.Table.from_pandas(dataframe)
-        os.makedirs(dataset_root, exist_ok=True)
-        with pa.OSFile(
-            f"{dataset_root}/vg.arrow", "wb"
-        ) as sink:
-            with pa.RecordBatchFileWriter(sink, table.schema) as writer:
-                writer.write_table(table)
+    bs = [path2rest(path, iid2captions) for path in tqdm(caption_paths)]
+    dataframe = pd.DataFrame(
+        bs, columns=["image", "caption", "width", "height", "x", "y", "image_id"],
+    )
+    table = pa.Table.from_pandas(dataframe)
+
+    os.makedirs(dataset_root, exist_ok=True)
+    with pa.OSFile(f"{dataset_root}/vg.arrow", "wb") as sink:
+        with pa.RecordBatchFileWriter(sink, table.schema) as writer:
+            writer.write_table(table)

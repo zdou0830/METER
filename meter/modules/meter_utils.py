@@ -184,10 +184,9 @@ def set_schedule(pl_module):
         "norm2.bias",
         "norm2.weight",
     ]
-    is_finetune = pl_module.hparams.config['finetune']
     head_names = ["vqa_classifier", "nlvr2_classifier", "mlm_score", "itm_score", "snli_classifier"]
     cross_modal_names = ['cross_modal']
-    lr_mult = pl_module.hparams.config["lr_mult"]
+    lr_mult_head = pl_module.hparams.config["lr_mult_head"]
     lr_mult_cross_modal = pl_module.hparams.config["lr_mult_cross_modal"]
     end_lr = pl_module.hparams.config["end_lr"]
     decay_power = pl_module.hparams.config["decay_power"]
@@ -224,7 +223,7 @@ def set_schedule(pl_module):
                 and not any(ht in n for ht in cross_modal_names)
             ],
             "weight_decay": wd,
-            "lr": lr * lr_mult,
+            "lr": lr * lr_mult_head,
         },
         {
             "params": [
@@ -234,7 +233,7 @@ def set_schedule(pl_module):
                 and not any(ht in n for ht in cross_modal_names)
             ],
             "weight_decay": 0.0,
-            "lr": lr * lr_mult,
+            "lr": lr * lr_mult_head,
         },
         {
             "params": [

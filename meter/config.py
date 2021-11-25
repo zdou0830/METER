@@ -65,7 +65,7 @@ def config():
     max_steps = 100000
     warmup_steps = 10000
     end_lr = 0
-    lr_mult = 5  # multiply lr for downstream heads
+    lr_mult_head = 5  # multiply lr for downstream heads
     lr_mult_cross_modal = 5  # multiply lr for the cross-modal module
 
     # Downstream Setting
@@ -107,10 +107,8 @@ def task_mlm_itm_clip_bert():
     val_transform_keys = ["clip"]
     learning_rate = 1e-5
     val_check_interval = 1.0
-    lr_mult = 5
+    lr_mult_head = 5
     lr_mult_cross_modal = 5
-    clip_image_embed_size = 768
-    clip_text_embed_size = 768
     num_top_layer = 6
     hidden_size = 768
     num_heads = 12
@@ -126,7 +124,7 @@ def task_finetune_nlvr2_clip_bert():
     warmup_steps = 0.1
     draw_false_image = 0
     learning_rate = 1e-5
-    lr_mult = 10
+    lr_mult_head = 10
     lr_mult_cross_modal = 5
     tokenizer = "bert-base-uncased"
     max_text_len = 50
@@ -149,7 +147,7 @@ def task_finetune_vqa_clip_bert():
     draw_false_image = 0
     learning_rate = 5e-6
     val_check_interval = 0.1
-    lr_mult = 50
+    lr_mult_head = 50
     lr_mult_cross_modal = 5
     tokenizer = "bert-base-uncased"
     max_text_len = 50
@@ -172,7 +170,7 @@ def task_finetune_irtr_coco_clip_bert():
     get_recall_metric = True
     draw_false_text = 15
     learning_rate = 5e-6
-    lr_mult = 5
+    lr_mult_head = 5
     lr_mult_cross_modal = 5
     tokenizer = "bert-base-uncased"
     input_text_embed_size = 768
@@ -193,7 +191,7 @@ def task_finetune_irtr_f30k_clip_bert():
     get_recall_metric = True
     draw_false_text = 15
     learning_rate = 5e-6
-    lr_mult = 5
+    lr_mult_head = 5
     lr_mult_cross_modal = 5
     tokenizer = "bert-base-uncased"
     input_text_embed_size = 768
@@ -214,7 +212,7 @@ def task_finetune_snli_clip_bert():
     warmup_steps = 0.1
     draw_false_image = 0
     learning_rate = 2e-6
-    lr_mult = 10
+    lr_mult_head = 10
     lr_mult_cross_modal = 5
     tokenizer = "bert-base-uncased"
     max_text_len = 50
@@ -227,30 +225,8 @@ def task_finetune_snli_clip_bert():
 
 
 # Named configs for "etc" which are orthogonal to "env" and "task", need to be added at the end
-@ex.named_config
-def step25k():
-    max_epoch = 100
-    max_steps = 25000
 
-
-@ex.named_config
-def step50k():
-    max_epoch = 100
-    max_steps = 50000
-
-
-@ex.named_config
-def step100k():
-    max_epoch = 100
-    max_steps = 100000
-
-
-@ex.named_config
-def step200k():
-    max_epoch = 200
-    max_steps = 200000
-
-
+# vision encoder
 @ex.named_config
 def swin32_base224():
     vit = "swin_base_patch4_window7_224_in22k"
@@ -258,7 +234,7 @@ def swin32_base224():
     image_size = 224
     train_transform_keys = ["imagenet"]
     val_transform_keys = ["imagenet"]
-    clip_image_embed_size = 1024
+    input_image_embed_size = 1024
 
 @ex.named_config
 def swin32_base384():
@@ -267,7 +243,7 @@ def swin32_base384():
     image_size = 384
     train_transform_keys = ["imagenet"]
     val_transform_keys = ["imagenet"]
-    clip_image_embed_size = 1024
+    input_image_embed_size = 1024
 
 @ex.named_config
 def swin32_large384():
@@ -276,7 +252,7 @@ def swin32_large384():
     image_size = 384
     train_transform_keys = ["imagenet"]
     val_transform_keys = ["imagenet"]
-    clip_image_embed_size = 1536
+    input_image_embed_size = 1536
 
 @ex.named_config
 def clip32():
@@ -285,7 +261,7 @@ def clip32():
     patch_size = 32
     train_transform_keys = ["clip"]
     val_transform_keys = ["clip"]
-    clip_image_embed_size = 768
+    input_image_embed_size = 768
 
 @ex.named_config
 def clip16():
@@ -294,20 +270,22 @@ def clip16():
     patch_size = 16
     train_transform_keys = ["clip"]
     val_transform_keys = ["clip"]
-    clip_image_embed_size = 768
+    input_image_embed_size = 768
 
+# text encoder
 @ex.named_config
 def text_roberta():
     tokenizer = "roberta-base"
     vocab_size = 50265
-    clip_text_embed_size = 768
+    input_text_embed_size = 768
 
 @ex.named_config
 def text_roberta_large():
     tokenizer = "roberta-large"
     vocab_size = 50265
-    clip_text_embed_size = 1024
+    input_text_embed_size = 1024
 
+# random augmentation
 @ex.named_config
 def imagenet_randaug():
     train_transform_keys = ["imagenet_randaug"]

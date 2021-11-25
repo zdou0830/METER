@@ -3,8 +3,6 @@ import os
 import pandas as pd
 import pyarrow as pa
 import random
-import json
-import base64
 
 from tqdm import tqdm
 from glob import glob
@@ -21,45 +19,39 @@ def path2rest(path, iid2captions, iid2split):
 
 
 def make_arrow(root, dataset_root):
-    imgs = {}
-    with open(f"{root}/coco.train.img.tsv", "r") as fp:
-        imgs['train'] = fp.readlines()
-    with open(f"{root}/coco.val.img.tsv", "r") as fp:
-        imgs['val'] = fp.readlines()
-    with open(f"{root}/coco.test.img.tsv", "r") as fp:
-        imgs['test'] = fp.readlines()
-    captions = {}
-    with open(f"{root}/coco.train.caption.tsv", "r") as fp:
-        captions['train'] = fp.readlines()
-    with open(f"{root}/coco.val.caption.tsv", "r") as fp:
-        captions['val'] = fp.readlines()
-    with open(f"{root}/coco.test.caption.tsv", "r") as fp:
-        captions['test'] = fp.readlines()
-    def to_batch(images, texts):
-        img_lines = [l.strip().split('\t') for l in images]
-        imgid2image = {}
-        for imgid, img in img_lines:
-            img = base64.b64decode(img)
-            imgid2image[imgid] = img
-        
-        txt_lines = [l.strip().split('\t') for l in texts]
-        imgid2text = {}
-        for imgid, txt in txt_lines:
-            txt = json.loads(txt)
-            txt_list = [l['caption'] for l in txt]
-            imgid2text[imgid] = txt_list
+    with open(f"{root}/karpathy/dataset_coco.json", "r") as fp:
+        captions = json.load(fp)
 
-        assert len(imgid2image) == len(imgid2text)
-        batches = []
-        for imgid in imgid2image:
-            batches.append([imgid2image[imgid], imgid2text[imgid], imgid])
-        return batches 
+    captions = captions["images"]
 
-    for split in ["train", "val", "test"]:
-        batches = to_batch(imgs[split], captions[split]) 
-        print(len(batches))
+    iid2captions = defaultdict(list)
+    iid2split = dict()
+
+    for cap in tqdm(captions):
+        filename = cap["filename"]
+        iid2split[filename] = cap["split"]
+        for c in cap["sentences"]:
+            iid2captions[filename].append(c["raw"])
+
+    paths = list(glob(f"{root}/train2014/*.jpg")) + list(glob(f"{root}/val2014/*.jpg"))
+    random.shuffle(paths)
+    caption_paths = [path for path in paths if path.split("/")[-1] in iid2captions]
+
+    if len(paths) == len(caption_paths):
+        print("all images have caption annotations")
+    else:
+        print("not all images have caption annotations")
+    print(
+        len(paths), len(caption_paths), len(iid2captions),
+    )
+
+    bs = [path2rest(path, iid2captions, iid2split) for path in tqdm(caption_paths)]
+
+    for split in ["train", "val", "restval", "test"]:
+        batches = [b for b in bs if b[-1] == split]
+
         dataframe = pd.DataFrame(
-            batches, columns=["image", "caption", "image_id"],
+            batches, columns=["image", "caption", "image_id", "split"],
         )
 
         table = pa.Table.from_pandas(dataframe)
