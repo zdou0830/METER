@@ -180,6 +180,7 @@ def task_finetune_irtr_coco_clip_bert():
     input_image_embed_size = 768
     image_size = 384
 
+@ex.named_config
 def task_finetune_irtr_f30k_clip_bert():
     exp_name = "finetune_irtr_f30k"
     datasets = ["f30k"]
