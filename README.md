@@ -195,8 +195,8 @@ python run.py with data_root=/data2/dsets/dataset num_gpus=8 num_nodes=1 task_fi
 @article{dou2021meter,
   title={An Empirical Study of Training End-to-End Vision-and-Language Transformers},
   author={Dou, Zi-Yi and Xu, Yichong and Gan, Zhe and Wang, Jianfeng and Wang, Shuohang and Wang, Lijuan and Zhu, Chenguang and Zhang, Pengchuan and Yuan, Lu and Peng, Nanyun and Liu, Zicheng and Zeng, Michael},
-  journal={arXiv},
-  year={2021},
+  journal={Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2022},
   url={https://arxiv.org/abs/2111.02387},
 }
 ```
