@@ -14,7 +14,7 @@ from ..gadgets.my_metrics import Accuracy, VQAScore, Scalar
 def set_metrics(pl_module):
     for split in ["train", "val"]:
         for k, v in pl_module.hparams.config["loss_names"].items():
-            if v < 1:
+            if v <= 0:
                 continue
             if k == "vqa":
                 setattr(pl_module, f"{split}_vqa_score", VQAScore())
@@ -77,7 +77,7 @@ def epoch_wrapup(pl_module):
         the_metric += ir_r1.item() + tr_r1.item()
 
     for loss_name, v in pl_module.hparams.config["loss_names"].items():
-        if v < 1:
+        if v <= 0:
             continue
 
         value = 0

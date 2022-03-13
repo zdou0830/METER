@@ -18,7 +18,7 @@ from timm.models.layers import Conv2dSame, Linear
 
 def swin_adapt_position_encoding(model, before=384, patch_size=32, after=384,
                             suffix='relative_position_bias_table'):
-    if after == 384:
+    if after == before:
         return model
     grid_before = int(before/32) 
     grid_after = int(after/32) #after // patch_size
@@ -181,7 +181,7 @@ def adapt_input_conv(in_chans, conv_weight):
 
 
 
-def load_pretrained(model, img_size, default_cfg=None, num_classes=1000, in_chans=3, filter_fn=None, strict=True, progress=False):
+def load_pretrained(model, img_size, default_cfg=None, num_classes=1000, in_chans=3, filter_fn=None, strict=True, progress=False, resolution_before=384):
     """ Load pretrained checkpoint
     Args:
         model (nn.Module) : PyTorch model module
@@ -204,7 +204,7 @@ def load_pretrained(model, img_size, default_cfg=None, num_classes=1000, in_chan
     else:
         _logger.info(f'Loading pretrained weights from url ({pretrained_url})')
         state_dict = load_state_dict_from_url(pretrained_url, progress=progress, map_location='cpu')
-        swin_adapt_position_encoding(state_dict['model'], after=img_size)
+        swin_adapt_position_encoding(state_dict['model'], before=resolution_before, after=img_size)
     if filter_fn is not None:
         # for backwards compat with filter fn that take one arg, try one first, the two
         try:
@@ -479,7 +479,8 @@ def swin_build_model_with_cfg(
                 in_chans=kwargs.get('in_chans', 3),
                 filter_fn=pretrained_filter_fn,
                 img_size=kwargs['img_size'],
-                strict=pretrained_strict)
+                strict=pretrained_strict,
+                resolution_before=kwargs['config']['resolution_before'])
     # Wrap the model in a feature extraction module if enabled
     if features:
         feature_cls = FeatureListNet

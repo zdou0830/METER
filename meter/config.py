@@ -35,6 +35,7 @@ def config():
     patch_size = 32
     draw_false_image = 1
     image_only = False
+    resolution_before = 224
 
     # Text Setting
     vqav2_label_size = 3129
@@ -236,6 +237,7 @@ def swin32_base224():
     train_transform_keys = ["imagenet"]
     val_transform_keys = ["imagenet"]
     input_image_embed_size = 1024
+    resolution_before = 224
 
 @ex.named_config
 def swin32_base384():
@@ -245,6 +247,7 @@ def swin32_base384():
     train_transform_keys = ["imagenet"]
     val_transform_keys = ["imagenet"]
     input_image_embed_size = 1024
+    resolution_before = 384
 
 @ex.named_config
 def swin32_large384():
@@ -254,6 +257,7 @@ def swin32_large384():
     train_transform_keys = ["imagenet"]
     val_transform_keys = ["imagenet"]
     input_image_embed_size = 1536
+    resolution_before = 384
 
 @ex.named_config
 def clip32():

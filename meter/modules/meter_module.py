@@ -120,7 +120,7 @@ class METERTransformerSS(pl.LightningModule):
             if self.is_clip:
                 state_dict = adapt_position_encoding(state_dict, after=resolution_after, patch_size=self.hparams.config['patch_size'])
             else:
-                state_dict = swin_adapt_position_encoding(state_dict, after=resolution_after)
+                state_dict = swin_adapt_position_encoding(state_dict, after=resolution_after, before=config['resolution_before'])
             self.load_state_dict(state_dict, strict=False)
 
 
@@ -164,7 +164,10 @@ class METERTransformerSS(pl.LightningModule):
         if self.hparams.config["load_path"] != "" and self.hparams.config["test_only"]:
             ckpt = torch.load(self.hparams.config["load_path"], map_location="cpu")
             state_dict = ckpt["state_dict"]
-            state_dict = adapt_position_encoding(state_dict, after=resolution_after, patch_size=self.hparams.config['patch_size'])
+            if self.is_clip:
+                state_dict = adapt_position_encoding(state_dict, after=resolution_after, patch_size=self.hparams.config['patch_size'])
+            else:
+                state_dict = swin_adapt_position_encoding(state_dict, after=resolution_after, before=config['resolution_before'])
             self.load_state_dict(state_dict, strict=False)
 
     def infer(
