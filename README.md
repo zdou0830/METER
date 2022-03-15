@@ -9,7 +9,7 @@ pip install -e .
 
 ## Pre-trained Checkpoints
 
-Here are the pre-trained models of METER-CLIP16-RoBERTa:
+Here are the pre-trained models:
 1. METER-CLIP16-RoBERTa (resolution: 288^2) pre-trained on GCC+SBU+COCO+VG [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_pretrain.ckpt)
 2. METER-CLIP16-RoBERTa (resolution: 224^2) pre-trained on GCC+SBU+COCO+VG [link](https://github.com/zdou0830/METER/releases/download/checkpoint2/meter_clip16_224_roberta_pretrain.ckpt)
 3. METER-SwinBase-RoBERTa (resolution: 384^2) pre-trained on GCC+SBU+COCO+VG [link](https://github.com/zdou0830/METER/releases/download/checkpoint2/meter_swinbase_384_roberta_pretrain.ckpt)
