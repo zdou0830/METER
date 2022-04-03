@@ -8,9 +8,10 @@ class CocoCaptionKarpathyDataset(BaseDataset):
         self.split = split
 
         if split == "train":
-            names = ["coco_caption_karpathy_train", "coco_caption_karpathy_val"]
+            names = ["coco_caption_karpathy_train", "coco_caption_karpathy_restval"]
         elif split == "val":
-            names = ["coco_caption_karpathy_val"]
+            # names = ["coco_caption_karpathy_val"]
+            names = ["coco_caption_karpathy_test"]
         elif split == "test":
             names = ["coco_caption_karpathy_test"]
 
