@@ -13,11 +13,11 @@ Here are the pre-trained models:
 1. METER-CLIP16-RoBERTa (resolution: 288^2) pre-trained on GCC+SBU+COCO+VG [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_pretrain.ckpt)
 2. METER-CLIP16-RoBERTa (resolution: 224^2) pre-trained on GCC+SBU+COCO+VG [link](https://github.com/zdou0830/METER/releases/download/checkpoint2/meter_clip16_224_roberta_pretrain.ckpt)
 3. METER-SwinBase-RoBERTa (resolution: 384^2) pre-trained on GCC+SBU+COCO+VG [link](https://github.com/zdou0830/METER/releases/download/checkpoint2/meter_swinbase_384_roberta_pretrain.ckpt)
-4. METER-CLIP16-RoBERTa fine-tuned on VQAv2 [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_vqa.ckpt)
-5. METER-CLIP16-RoBERTa fine-tuned on NLVR2 [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_nlvr2.ckpt)
-6. METER-CLIP16-RoBERTa fine-tuned on SNLI-VE [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_snli.ckpt)
-7. METER-CLIP16-RoBERTa fine-tuned on Flickr30k IR/TR [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_flickr.ckpt)
-8. METER-CLIP16-RoBERTa fine-tuned on COCO IR/TR [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_coco.ckpt)
+4. METER-CLIP16-RoBERTa fine-tuned on VQAv2 (resolution: 576^2) [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_vqa.ckpt)
+5. METER-CLIP16-RoBERTa fine-tuned on NLVR2 (resolution: 288^2) [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_nlvr2.ckpt)
+6. METER-CLIP16-RoBERTa fine-tuned on SNLI-VE (resolution: 384^2) [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_snli.ckpt)
+7. METER-CLIP16-RoBERTa fine-tuned on Flickr30k IR/TR (resolution: 384^2) [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_flickr.ckpt)
+8. METER-CLIP16-RoBERTa fine-tuned on COCO IR/TR (resolution: 384^2) [link](https://github.com/zdou0830/METER/releases/download/checkpoint/meter_clip16_288_roberta_coco.ckpt)
 
 
 ## Dataset Preparation
