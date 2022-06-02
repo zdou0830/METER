@@ -125,14 +125,12 @@ class CLIP(nn.Module):
         )
 
         self.vocab_size = vocab_size
-        self.token_embedding = nn.Embedding(vocab_size, transformer_width)
         self.positional_embedding = nn.Parameter(torch.empty(self.context_length, transformer_width))
         self.ln_final = LayerNorm(transformer_width)
 
         self.initialize_parameters()
 
     def initialize_parameters(self):
-        nn.init.normal_(self.token_embedding.weight, std=0.02)
         nn.init.normal_(self.positional_embedding, std=0.01)
 
         proj_std = (self.visual.transformer.width ** -0.5) * ((2 * self.visual.transformer.layers) ** -0.5)
