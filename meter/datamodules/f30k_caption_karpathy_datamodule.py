@@ -1,6 +1,6 @@
 from ..datasets import F30KCaptionKarpathyDataset
 from .datamodule_base import BaseDataModule
-
+from torch.utils.data.dataloader import DataLoader
 
 class F30KCaptionKarpathyDataModule(BaseDataModule):
     def __init__(self, *args, **kwargs):
